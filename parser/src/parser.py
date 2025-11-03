@@ -1,45 +1,49 @@
 import ply.yacc as yacc
 from lexer import tokens
 
-symbol_table = {}
-
 precedence = (
     ('left', 'PLUS', 'MINUS'),
     ('left', 'TIMES', 'DIVIDE'),
 )
 
-#Producciones
-
 def p_statement(p):
     '''statement : declaration
                  | print_statement'''
-    pass
+    if p[1] is True:
+        print("Parsing Success!")
+        print("SDT Verified!")
+    elif p[1] is False:
+        print("Parsing Success!")
+        print("SDT error... (Tipo no coincide o error semántico)")
+    else:
+        print("Parsing Success!")
 
+# Declaración
 def p_declaration(p):
     'declaration : type ID ASSIGN expression SEMICOLON'
     var_type = p[1]
-    var_name = p[2]
     value = p[4]
 
     if var_type == 'int' and isinstance(value, int):
-        symbol_table[var_name] = value
-        print("Parsing Success!\nSDT Verified!")
+        p[0] = True
     elif var_type == 'float' and isinstance(value, (int, float)):
-        symbol_table[var_name] = float(value)
-        print("Parsing Success!\nSDT Verified!")
+        p[0] = True
     else:
-        print("Parsing Success!\nSDT error... (Type mismatch)")
+        p[0] = False
 
+# Declaración print
 def p_print_string(p):
     'print_statement : PRINT LPAREN STRING RPAREN SEMICOLON'
     print(f'Output: {p[3]}')
-    print("Parsing Success!\nSDT Verified!")
+    p[0] = True
 
+# Tipos
 def p_type(p):
     '''type : INT
             | FLOAT'''
     p[0] = p[1]
 
+# Expresiones aritméticas
 def p_expression_plus_minus(p):
     '''expression : expression PLUS term
                   | expression MINUS term'''
@@ -75,17 +79,16 @@ def p_factor_num(p):
 
 def p_factor_id(p):
     'factor : ID'
-    if p[1] in symbol_table:
-        p[0] = symbol_table[p[1]]
-    else:
-        print(f"SDT error... Variable '{p[1]}' not declared.")
-        p[0] = 0
+    p[0] = 0
 
 def p_factor_group(p):
     'factor : LPAREN expression RPAREN'
     p[0] = p[2]
 
 def p_error(p):
-    print("Parsing error...")
+    if p:
+        print(f"Parsing error in token '{p.value}' (type {p.type})")
+    else:
+        print("Parsing error at EOF")
 
 parser = yacc.yacc()
