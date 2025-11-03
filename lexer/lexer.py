@@ -104,7 +104,7 @@ class Lexer:
             if (self.ch == ''):
                 return Tok(TokenType.INVALID, self.input[start:self.position])
         self.readChar()
-        return Tok(TokenType.LITERALLY, self.input[start:self.position])
+        return Tok(TokenType.LITERAL, self.input[start:self.position])
 
     def skipWhitespace(self):
         while self.ch == ' ' or self.ch == '\t' or self.ch == '\n' or self.ch == '\r':
@@ -114,4 +114,4 @@ def isIdentifierLetter(ch):
     return ('a' <= ch and ch <= 'z') or ('A' <= ch and ch <= 'Z') or ch == '_'
 
 def isDigit(ch):
-    return '0' <= ch and ch <= '9' 
+    return '0' <= ch and ch <= '9'

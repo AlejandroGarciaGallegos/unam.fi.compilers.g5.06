@@ -13,7 +13,7 @@ class TokenType:
     CONSTANT = "CONSTANT"
     EOF = "EOF"
     INVALID = "INVALID"
-    LITERALLY = "LITERALLY"
+    LITERAL = "LITERAL"
 
 keywords = [
     "print",
