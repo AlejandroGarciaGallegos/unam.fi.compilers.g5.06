@@ -1,10 +1,14 @@
 from parser import parser
 
 def main():
-    print("Parser & SDT\nType 'exit' to quit.")
+    print("Parser & SDT")
+    print("Escribe 'exit' para salir.\n")
     while True:
-        data = input(">> ")
-        if data.lower() == 'exit':
+        try:
+            data = input(">> ")
+        except EOFError:
+            break
+        if data.lower() == "exit":
             break
         if not data.strip():
             continue
