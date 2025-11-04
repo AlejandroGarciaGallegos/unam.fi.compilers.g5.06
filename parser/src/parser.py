@@ -14,7 +14,7 @@ def p_statement(p):
         print("SDT Verified!")
     elif p[1] is False:
         print("Parsing Success!")
-        print("SDT error... (Tipo no coincide o error semántico)")
+        print("SDT error...")
     else:
         print("Parsing Success!")
 
@@ -23,6 +23,10 @@ def p_declaration(p):
     'declaration : type ID ASSIGN expression SEMICOLON'
     var_type = p[1]
     value = p[4]
+
+    if value is None:
+        p[0] = False
+        return
 
     if var_type == 'int' and isinstance(value, int):
         p[0] = True
@@ -37,6 +41,14 @@ def p_print_string(p):
     print(f'Output: {p[3]}')
     p[0] = True
 
+def p_print_expr(p):
+    'print_statement : PRINT LPAREN expression RPAREN SEMICOLON'
+    if p[3] is None:
+        p[0] = False
+    else:
+        print(f'Output: {p[3]}')
+        p[0] = True
+
 # Tipos
 def p_type(p):
     '''type : INT
@@ -47,6 +59,9 @@ def p_type(p):
 def p_expression_plus_minus(p):
     '''expression : expression PLUS term
                   | expression MINUS term'''
+    if p[1] is None or p[3] is None:
+        p[0] = None
+        return
     if p[2] == '+':
         p[0] = p[1] + p[3]
     else:
@@ -59,14 +74,16 @@ def p_expression_term(p):
 def p_term_times_div(p):
     '''term : term TIMES factor
             | term DIVIDE factor'''
+    if p[1] is None or p[3] is None:
+        p[0] = None
+        return
     if p[2] == '*':
         p[0] = p[1] * p[3]
     else:
-        try:
+        if p[3] == 0:
+            p[0] = None
+        else:
             p[0] = p[1] / p[3]
-        except ZeroDivisionError:
-            print("SDT error... Division by zero")
-            p[0] = 0
 
 def p_term_factor(p):
     'term : factor'
