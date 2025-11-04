@@ -2,7 +2,7 @@ from parser import parser
 
 def main():
     print("Parser & SDT")
-    print("Escribe 'exit' para salir.\n")
+    print("Type 'exit' to leave.\n")
     while True:
         try:
             data = input(">> ")
