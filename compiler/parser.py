@@ -34,11 +34,8 @@ def _token_value_to_basic_type(token_value: str) -> BasicType:
     raise ValueError(f"Unknown type keyword {token_value!r}")
 
 
-# === Gramática ===
-
 def p_program(p):
     "program : stmt_list"
-    # Línea del primer statement (o 1)
     line = p[1][0].line if p[1] else 1
     p[0] = Program(line=line, statements=p[1])
 
@@ -89,13 +86,11 @@ def p_statement_print_string(p):
 
 def p_statement_empty(p):
     "statement : SEMICOLON"
-    # Sentencia vacía; no hacemos nada
     p[0] = None
 
 
 def p_type_int(p):
     "type : INT"
-    # p[1] es el lexema 'int'
     p[0] = p[1]
 
 
@@ -162,9 +157,13 @@ def p_factor_uminus(p):
 
 def p_error(p):
     if p is None:
-        # EOF inesperado
-        raise CompileError(line=0, message="unexpected end of input")
+        line = lexer.lineno or 1
+        raise CompileError(line=line-1, message="syntax error (missing ';')")
     else:
+        # Si aparece un token que puede iniciar una nueva sentencia donde
+        # el parser esperaba un ';'
+        if p.type in ("INT", "FLOAT", "PRINT", "ID"):
+            raise CompileError(line=p.lineno-1, message="syntax error (missing ';')")
         raise CompileError(
             line=p.lineno,
             message=f"syntax error at token {p.type!r} with value {p.value!r}",
@@ -175,8 +174,4 @@ parser = yacc.yacc(start="program")
 
 
 def parse_source(text: str) -> Program:
-    """
-    Función de conveniencia para parsear una cadena completa
-    y devolver el AST Program correspondiente.
-    """
     return parser.parse(text, lexer=lexer, tracking=True)

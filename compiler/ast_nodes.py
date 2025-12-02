@@ -60,9 +60,6 @@ class ExecutionContext:
             raise CompileError(line, f"variable '{name}' not declared")
         return self.symbols[name]
 
-
-# === Nodos base ===
-
 @dataclass
 class Node:
     line: int
@@ -78,9 +75,6 @@ class Statement(Node):
 class Expr(Node):
     def eval(self, ctx: ExecutionContext) -> Tuple[BasicType, Any]:
         raise NotImplementedError
-
-
-# === Programa y sentencias ===
 
 @dataclass
 class Program(Node):
@@ -134,9 +128,6 @@ class Print(Statement):
         expr_type, expr_val = self.expr.eval(ctx)
         # Para el proyecto basta con imprimir el valor crudo
         print(expr_val)
-
-
-# === Expresiones ===
 
 @dataclass
 class Literal(Expr):

@@ -1,6 +1,2 @@
-int a = 3.3;
-float b = a / 2.0;
-a = a + 5;
-print(a);
-print(b);
-print("fin");
+int 122;
+float b = 2.0;

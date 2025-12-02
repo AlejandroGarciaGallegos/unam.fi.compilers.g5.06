@@ -51,7 +51,6 @@ def t_NUMBER(t):
 
 def t_STRING(t):
     r'"([^\\\n]|(\\.))*?"'
-    # Quitamos comillas y procesamos escapes básicos
     raw = t.value[1:-1]
     t.value = bytes(raw, "utf-8").decode("unicode_escape")
     return t

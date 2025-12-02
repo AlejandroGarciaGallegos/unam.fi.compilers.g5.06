@@ -15,7 +15,6 @@ def compile_and_run(source_path: Path) -> None:
         ctx = ExecutionContext()
         program.execute(ctx)
     except CompileError as e:
-        # Estilo requerido: error in line n
         print(str(e))
 
 
